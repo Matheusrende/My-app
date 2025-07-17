@@ -15,7 +15,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import ThemeSwitch from '../components/ThemeSwitch';
 
 import { auth } from '../firebaseConfig';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -35,13 +35,28 @@ export default function LoginScreen({ navigation }) {
     signInWithEmailAndPassword(auth, email.trim(), senha)
       .then(() => {
         Alert.alert('Sucesso', 'Login realizado com sucesso!');
-        // Aqui você pode navegar para a tela principal do app
+        navigation.navigate('Home');
+
       })
       .catch((error) => {
         Alert.alert('Erro', error.message);
       })
       .finally(() => setLoading(false));
   };
+
+  const handleForgotPassword = () => {
+  if (!email.trim()) {
+    Alert.alert('Atenção', 'Digite seu e-mail para redefinir a senha.');
+    return;
+  }
+  sendPasswordResetEmail(auth, email.trim())
+    .then(() => {
+      Alert.alert('Sucesso', 'E-mail de redefinição enviado!');
+    })
+    .catch((error) => {
+      Alert.alert('Erro', error.message);
+    });
+};
 
   return (
     <KeyboardAvoidingView
@@ -92,6 +107,9 @@ export default function LoginScreen({ navigation }) {
               disabled={loading}
             >
               <Text style={styles.textoBotao}>{loading ? 'Entrando...' : 'Entrar'}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('RedefinirSenha')} disabled={loading}>
+              <Text style={[styles.link, { color: '#e26a4a' }]}>Esqueci minha senha</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => navigation.navigate('Registro')} disabled={loading}>
