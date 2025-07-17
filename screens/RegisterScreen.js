@@ -20,7 +20,7 @@ import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 export default function RegisterScreen({ navigation }) {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
-  const [confirmarEmail, setConfirmarEmail] = useState(''); // ✅ MUDANÇA: novo estado
+  const [confirmarEmail, setConfirmarEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const [loading, setLoading] = useState(false);
@@ -28,14 +28,14 @@ export default function RegisterScreen({ navigation }) {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
+  const boxBackgroundColor = isDark ? '#222222' : '#B7512C';
+
   const handleRegister = () => {
-    // ✅ MUDANÇA: agora valida também confirmarEmail
     if (!nome.trim() || !email.trim() || !confirmarEmail.trim() || !senha.trim() || !confirmarSenha.trim()) {
       Alert.alert('Erro', 'Preencha todos os campos.');
       return;
     }
 
-    // ✅ MUDANÇA: valida igualdade entre e-mail e confirmação
     if (email !== confirmarEmail) {
       Alert.alert('Erro', 'Os e-mails não coincidem.');
       return;
@@ -61,9 +61,8 @@ export default function RegisterScreen({ navigation }) {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
+      style={{ flex: 1, backgroundColor: isDark ? '#000' : '#e6e6e6' }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
     >
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.wrapper}>
@@ -71,91 +70,81 @@ export default function RegisterScreen({ navigation }) {
             <ThemeSwitch />
           </View>
 
-          <View style={[styles.container, { backgroundColor: isDark ? '#000' : '#f0f4f7' }]}>
-            <Image source={require('../assets/logo1.png')} style={styles.logo} />
+          <View style={styles.container}>
+            <Text style={styles.topText}>Create your account</Text>
+            <Text style={styles.logoText}>Pet Shop</Text>
 
-            <Text style={[styles.titulo, { color: isDark ? '#fff' : '#333' }]}>Criar Conta</Text>
+            <View style={[styles.registerBox, { backgroundColor: boxBackgroundColor }]}>
+              <Image source={require('../assets/logo1.png')} style={styles.logo} />
 
-            <TextInput
-              style={[
-                styles.input,
-                { backgroundColor: isDark ? '#222' : '#fff', color: isDark ? '#fff' : '#000' },
-              ]}
-              placeholder="Seu nome"
-              placeholderTextColor={isDark ? '#aaa' : '#666'}
-              value={nome}
-              onChangeText={setNome}
-              editable={!loading}
-            />
+              <Text style={styles.registerTitle}>Sign Up</Text>
 
-            <TextInput
-              style={[
-                styles.input,
-                { backgroundColor: isDark ? '#222' : '#fff', color: isDark ? '#fff' : '#000' },
-              ]}
-              placeholder="Seu e-mail"
-              placeholderTextColor={isDark ? '#aaa' : '#666'}
-              keyboardType="email-address"
-              value={email}
-              onChangeText={setEmail}
-              autoCapitalize="none"
-              editable={!loading}
-            />
+              <Text style={styles.label}>Name</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Your name"
+                placeholderTextColor="#fff"
+                value={nome}
+                onChangeText={setNome}
+                editable={!loading}
+              />
 
-            
-            <TextInput
-              style={[
-                styles.input,
-                { backgroundColor: isDark ? '#222' : '#fff', color: isDark ? '#fff' : '#000' },
-              ]}
-              placeholder="Confirmar e-mail"
-              placeholderTextColor={isDark ? '#aaa' : '#666'}
-              keyboardType="email-address"
-              value={confirmarEmail}
-              onChangeText={setConfirmarEmail}
-              autoCapitalize="none"
-              editable={!loading}
-            />
+              <Text style={styles.label}>Email</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                placeholderTextColor="#fff"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                editable={!loading}
+              />
 
-            <TextInput
-              style={[
-                styles.input,
-                { backgroundColor: isDark ? '#222' : '#fff', color: isDark ? '#fff' : '#000' },
-              ]}
-              placeholder="Senha"
-              placeholderTextColor={isDark ? '#aaa' : '#666'}
-              secureTextEntry
-              value={senha}
-              onChangeText={setSenha}
-              editable={!loading}
-            />
+              <Text style={styles.label}>Confirm Email</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Confirm your email"
+                placeholderTextColor="#fff"
+                value={confirmarEmail}
+                onChangeText={setConfirmarEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                editable={!loading}
+              />
 
-            <TextInput
-              style={[
-                styles.input,
-                { backgroundColor: isDark ? '#222' : '#fff', color: isDark ? '#fff' : '#000' },
-              ]}
-              placeholder="Confirmar senha"
-              placeholderTextColor={isDark ? '#aaa' : '#666'}
-              secureTextEntry
-              value={confirmarSenha}
-              onChangeText={setConfirmarSenha}
-              editable={!loading}
-            />
+              <Text style={styles.label}>Password</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                placeholderTextColor="#fff"
+                secureTextEntry
+                value={senha}
+                onChangeText={setSenha}
+                editable={!loading}
+              />
 
-            <TouchableOpacity
-              style={[styles.botao, loading && { backgroundColor: '#999' }]}
-              onPress={handleRegister}
-              disabled={loading}
-            >
-              <Text style={styles.textoBotao}>
-                {loading ? 'Criando conta...' : 'Registrar'}
-              </Text>
-            </TouchableOpacity>
+              <Text style={styles.label}>Confirm Password</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Confirm your password"
+                placeholderTextColor="#fff"
+                secureTextEntry
+                value={confirmarSenha}
+                onChangeText={setConfirmarSenha}
+                editable={!loading}
+              />
 
-            <TouchableOpacity onPress={() => navigation.goBack()} disabled={loading}>
-              <Text style={[styles.link, { color: '#4a90e2' }]}>Voltar para login</Text>
-            </TouchableOpacity>
+              <TouchableOpacity style={[styles.button, loading && { backgroundColor: '#D38264' }]} onPress={handleRegister} disabled={loading}>
+                <Text style={styles.buttonText}>{loading ? 'Creating...' : 'Register'}</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => navigation.goBack()} disabled={loading}>
+                <Text style={styles.backToLogin}>Back to Login</Text>
+              </TouchableOpacity>
+
+            </View>
+
           </View>
         </View>
       </ScrollView>
@@ -180,38 +169,71 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
-  logo: {
-    width: 120,
-    height: 120,
+  topText: {
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 5,
+  },
+  logoText: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#F45D48',
+    fontFamily: Platform.OS === 'ios' ? 'Arial Rounded MT Bold' : 'sans-serif-condensed',
     marginBottom: 20,
+  },
+  registerBox: {
+    width: '100%',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    padding: 25,
+    alignItems: 'center',
+  },
+  logo: {
+    width: 80,
+    height: 80,
+    marginBottom: 10,
     resizeMode: 'contain',
   },
-  titulo: {
-    fontSize: 28,
+  registerTitle: {
+    fontSize: 24,
+    color: '#fff',
     fontWeight: 'bold',
-    marginBottom: 30,
+    marginBottom: 20,
+  },
+  label: {
+    alignSelf: 'flex-start',
+    color: '#fff',
+    marginBottom: 5,
+    marginTop: 10,
   },
   input: {
     width: '100%',
+    backgroundColor: '#D38264',
     padding: 12,
-    marginBottom: 15,
-    borderRadius: 8,
-    borderColor: '#ccc',
-    borderWidth: 1,
-  },
-  botao: {
-    width: '100%',
-    backgroundColor: '#4a90e2',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  textoBotao: {
+    borderRadius: 20,
+    marginBottom: 5,
     color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
-  link: {
+  button: {
+    backgroundColor: '#F45D48',
+    borderRadius: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 40,
+    marginTop: 20,
+    borderWidth: 2,
+    borderColor: '#fff',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  backToLogin: {
+    color: '#fff',
     marginTop: 15,
+    fontSize: 12,
+    textDecorationLine: 'underline',
   },
 });

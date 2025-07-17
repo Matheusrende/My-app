@@ -25,6 +25,8 @@ export default function LoginScreen({ navigation }) {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
+  const boxBackgroundColor = isDark ? '#222222' : '#B7512C';
+
   const handleLogin = () => {
     if (!email.trim() || !senha.trim()) {
       Alert.alert('Erro', 'Preencha todos os campos.');
@@ -36,7 +38,6 @@ export default function LoginScreen({ navigation }) {
       .then(() => {
         Alert.alert('Sucesso', 'Login realizado com sucesso!');
         navigation.navigate('Home');
-
       })
       .catch((error) => {
         Alert.alert('Erro', error.message);
@@ -45,24 +46,23 @@ export default function LoginScreen({ navigation }) {
   };
 
   const handleForgotPassword = () => {
-  if (!email.trim()) {
-    Alert.alert('Atenção', 'Digite seu e-mail para redefinir a senha.');
-    return;
-  }
-  sendPasswordResetEmail(auth, email.trim())
-    .then(() => {
-      Alert.alert('Sucesso', 'E-mail de redefinição enviado!');
-    })
-    .catch((error) => {
-      Alert.alert('Erro', error.message);
-    });
-};
+    if (!email.trim()) {
+      Alert.alert('Atenção', 'Digite seu e-mail para redefinir a senha.');
+      return;
+    }
+    sendPasswordResetEmail(auth, email.trim())
+      .then(() => {
+        Alert.alert('Sucesso', 'E-mail de redefinição enviado!');
+      })
+      .catch((error) => {
+        Alert.alert('Erro', error.message);
+      });
+  };
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
+      style={{ flex: 1, backgroundColor: isDark ? '#000' : '#e6e6e6' }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
     >
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.wrapper}>
@@ -70,51 +70,52 @@ export default function LoginScreen({ navigation }) {
             <ThemeSwitch />
           </View>
 
-          <View style={[styles.container, { backgroundColor: isDark ? '#000' : '#f0f4f7' }]}>
-            <Image source={require('../assets/logo1.png')} style={styles.logo} />
+          <View style={styles.container}>
+            <Text style={styles.topText}>Welcome back</Text>
+            <Text style={styles.logoText}>Pet Shop</Text>
 
-            <Text style={[styles.titulo, { color: isDark ? '#fff' : '#333' }]}>Login</Text>
+            <View style={[styles.loginBox, { backgroundColor: boxBackgroundColor }]}>
+              <Image source={require('../assets/logo1.png')} style={styles.logo} />
 
-            <TextInput
-              style={[
-                styles.input,
-                { backgroundColor: isDark ? '#222' : '#fff', color: isDark ? '#fff' : '#000' },
-              ]}
-              placeholder="Digite seu e-mail"
-              placeholderTextColor={isDark ? '#aaa' : '#666'}
-              value={email}
-              onChangeText={setEmail}
-              autoCapitalize="none"
-              editable={!loading}
-            />
+              <Text style={styles.loginTitle}>Sign In</Text>
 
-            <TextInput
-              style={[
-                styles.input,
-                { backgroundColor: isDark ? '#222' : '#fff', color: isDark ? '#fff' : '#000' },
-              ]}
-              placeholder="Digite sua senha"
-              placeholderTextColor={isDark ? '#aaa' : '#666'}
-              secureTextEntry
-              value={senha}
-              onChangeText={setSenha}
-              editable={!loading}
-            />
+              <Text style={styles.label}>Email</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                placeholderTextColor="#fff"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                editable={!loading}
+              />
 
-            <TouchableOpacity
-              style={[styles.botao, loading && { backgroundColor: '#999' }]}
-              onPress={handleLogin}
-              disabled={loading}
-            >
-              <Text style={styles.textoBotao}>{loading ? 'Entrando...' : 'Entrar'}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('RedefinirSenha')} disabled={loading}>
-              <Text style={[styles.link, { color: '#e26a4a' }]}>Esqueci minha senha</Text>
-            </TouchableOpacity>
+              <Text style={styles.label}>Password</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                placeholderTextColor="#fff"
+                secureTextEntry
+                value={senha}
+                onChangeText={setSenha}
+                editable={!loading}
+              />
 
-            <TouchableOpacity onPress={() => navigation.navigate('Registro')} disabled={loading}>
-              <Text style={[styles.link, { color: '#4a90e2' }]}>Criar nova conta</Text>
-            </TouchableOpacity>
+              <TouchableOpacity onPress={handleForgotPassword} disabled={loading}>
+                <Text style={styles.forgotPassword}>Forgot Password?</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={[styles.button, loading && { backgroundColor: '#D38264' }]} onPress={handleLogin} disabled={loading}>
+                <Text style={styles.buttonText}>{loading ? 'Signing in...' : 'Login'}</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => navigation.navigate('Registro')} disabled={loading}>
+                <Text style={styles.backToRegister}>Create a new account</Text>
+              </TouchableOpacity>
+
+            </View>
+
           </View>
         </View>
       </ScrollView>
@@ -139,38 +140,78 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
-  logo: {
-    width: 120,
-    height: 120,
+  topText: {
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 5,
+  },
+  logoText: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#F45D48',
+    fontFamily: Platform.OS === 'ios' ? 'Arial Rounded MT Bold' : 'sans-serif-condensed',
     marginBottom: 20,
+  },
+  loginBox: {
+    width: '100%',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    padding: 25,
+    alignItems: 'center',
+  },
+  logo: {
+    width: 80,
+    height: 80,
+    marginBottom: 10,
     resizeMode: 'contain',
   },
-  titulo: {
-    fontSize: 28,
+  loginTitle: {
+    fontSize: 24,
+    color: '#fff',
     fontWeight: 'bold',
-    marginBottom: 30,
+    marginBottom: 20,
+  },
+  label: {
+    alignSelf: 'flex-start',
+    color: '#fff',
+    marginBottom: 5,
+    marginTop: 10,
   },
   input: {
     width: '100%',
+    backgroundColor: '#D38264',
     padding: 12,
-    marginBottom: 15,
-    borderRadius: 8,
-    borderColor: '#ccc',
-    borderWidth: 1,
-  },
-  botao: {
-    width: '100%',
-    backgroundColor: '#4a90e2',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  textoBotao: {
+    borderRadius: 20,
+    marginBottom: 5,
     color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
-  link: {
+  forgotPassword: {
+    color: '#fff',
+    marginTop: 10,
+    fontSize: 12,
+    textDecorationLine: 'underline',
+    alignSelf: 'flex-end',
+  },
+  button: {
+    backgroundColor: '#F45D48',
+    borderRadius: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 40,
+    marginTop: 20,
+    borderWidth: 2,
+    borderColor: '#fff',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  backToRegister: {
+    color: '#fff',
     marginTop: 15,
+    fontSize: 12,
+    textDecorationLine: 'underline',
   },
 });
