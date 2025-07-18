@@ -71,7 +71,7 @@ export default function LoginScreen({ navigation }) {
           </View>
 
           <View style={styles.container}>
-            <Text style={styles.topText}>Welcome back</Text>
+            <Text style={[styles.topText, { color: isDark ? '#fff' : '#333' }]}>Welcome back</Text>
             <Text style={styles.logoText}>Pet Shop</Text>
 
             <View style={[styles.loginBox, { backgroundColor: boxBackgroundColor }]}>
