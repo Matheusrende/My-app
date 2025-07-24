@@ -72,7 +72,7 @@ export default function LoginScreen({ navigation }) {
 
           <View style={styles.container}>
             <Text style={[styles.topText, { color: isDark ? '#fff' : '#333' }]}>Welcome back</Text>
-            <Text style={styles.logoText}>Pet Shop</Text>
+            <Text style={styles.logoText}></Text>
 
             <View style={[styles.loginBox, { backgroundColor: boxBackgroundColor }]}>
               <Image source={require('../assets/logo1.png')} style={styles.logo} />
