@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
 import ThemeSwitch from '../components/ThemeSwitch';
-
 import { auth } from '../firebaseConfig';
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 
@@ -21,18 +20,13 @@ export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
-
-  const boxBackgroundColor = isDark ? '#222222' : '#B7512C';
+  const { colors } = useTheme();
 
   const handleLogin = () => {
     if (!email.trim() || !senha.trim()) {
       Alert.alert('Erro', 'Preencha todos os campos.');
       return;
     }
-
     setLoading(true);
     signInWithEmailAndPassword(auth, email.trim(), senha)
       .then(() => {
@@ -61,7 +55,7 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: isDark ? '#000' : '#e6e6e6' }}
+      style={{ flex: 1, backgroundColor: colors.background }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -69,53 +63,45 @@ export default function LoginScreen({ navigation }) {
           <View style={styles.themeSwitchContainer}>
             <ThemeSwitch />
           </View>
-
           <View style={styles.container}>
-            <Text style={[styles.topText, { color: isDark ? '#fff' : '#333' }]}>Welcome back</Text>
-            <Text style={styles.logoText}></Text>
-
-            <View style={[styles.loginBox, { backgroundColor: boxBackgroundColor }]}>
-              <Image source={require('../assets/logo1.png')} style={styles.logo} />
-
-              <Text style={styles.loginTitle}>Sign In</Text>
-
-              <Text style={styles.label}>Email</Text>
+            <Text style={[styles.topText, { color: colors.secondary }]}>Seja bem-vindo</Text>
+            <Text style={[styles.logoText, { color: colors.secondary }]}></Text>
+            <View style={[styles.loginBox, { backgroundColor: colors.surface }]}>
+              <Image source={require('../assets/Real-logo.png')} style={styles.logo} />
+              <Text style={[styles.loginTitle, { color: colors.text }]}>Entrar</Text>
+              <Text style={[styles.label, { color: colors.text }]}>Email</Text>
               <TextInput
-                style={styles.input}
+                style={[styles.input, { backgroundColor: colors.background, color: colors.text, borderColor: colors.subtext }]}
                 placeholder="Email"
-                placeholderTextColor="#fff"
+                placeholderTextColor={colors.placeholder}
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 editable={!loading}
               />
-
-              <Text style={styles.label}>Password</Text>
+              <Text style={[styles.label, { color: colors.text }]}>Senha</Text>
               <TextInput
-                style={styles.input}
+                style={[styles.input, { backgroundColor: colors.background, color: colors.text, borderColor: colors.subtext }]}
                 placeholder="Password"
-                placeholderTextColor="#fff"
+                placeholderTextColor={colors.placeholder}
                 secureTextEntry
                 value={senha}
                 onChangeText={setSenha}
                 editable={!loading}
               />
-
               <TouchableOpacity onPress={handleForgotPassword} disabled={loading}>
-                <Text style={styles.forgotPassword}>Forgot Password?</Text>
+                <Text style={[styles.forgotPassword, { color: colors.subtext }]}>Esqueceu a senha?</Text>
               </TouchableOpacity>
-
-              <TouchableOpacity style={[styles.button, loading && { backgroundColor: '#D38264' }]} onPress={handleLogin} disabled={loading}>
-                <Text style={styles.buttonText}>{loading ? 'Signing in...' : 'Login'}</Text>
+              <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }, loading && { opacity: 0.7 }]} onPress={handleLogin} disabled={loading}>
+                <Text style={styles.buttonText}>
+                  {loading ? 'Signing in...' : 'Login'}
+                </Text>
               </TouchableOpacity>
-
               <TouchableOpacity onPress={() => navigation.navigate('Registro')} disabled={loading}>
-                <Text style={styles.backToRegister}>Create a new account</Text>
+                <Text style={[styles.backToRegister, { color: colors.subtext }]}>Crie uma nova conta</Text>
               </TouchableOpacity>
-
             </View>
-
           </View>
         </View>
       </ScrollView>
@@ -124,94 +110,18 @@ export default function LoginScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    position: 'relative',
-  },
-  themeSwitchContainer: {
-    position: 'absolute',
-    top: 30,
-    right: 20,
-    zIndex: 10,
-  },
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  topText: {
-    fontSize: 16,
-    color: '#333',
-    marginBottom: 5,
-  },
-  logoText: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#F45D48',
-    fontFamily: Platform.OS === 'ios' ? 'Arial Rounded MT Bold' : 'sans-serif-condensed',
-    marginBottom: 20,
-  },
-  loginBox: {
-    width: '100%',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    padding: 25,
-    alignItems: 'center',
-  },
-  logo: {
-    width: 80,
-    height: 80,
-    marginBottom: 10,
-    resizeMode: 'contain',
-  },
-  loginTitle: {
-    fontSize: 24,
-    color: '#fff',
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  label: {
-    alignSelf: 'flex-start',
-    color: '#fff',
-    marginBottom: 5,
-    marginTop: 10,
-  },
-  input: {
-    width: '100%',
-    backgroundColor: '#D38264',
-    padding: 12,
-    borderRadius: 20,
-    marginBottom: 5,
-    color: '#fff',
-  },
-  forgotPassword: {
-    color: '#fff',
-    marginTop: 10,
-    fontSize: 12,
-    textDecorationLine: 'underline',
-    alignSelf: 'flex-end',
-  },
-  button: {
-    backgroundColor: '#F45D48',
-    borderRadius: 20,
-    paddingVertical: 12,
-    paddingHorizontal: 40,
-    marginTop: 20,
-    borderWidth: 2,
-    borderColor: '#fff',
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  backToRegister: {
-    color: '#fff',
-    marginTop: 15,
-    fontSize: 12,
-    textDecorationLine: 'underline',
-  },
+  wrapper: { flex: 1, position: 'relative' },
+  themeSwitchContainer: { position: 'absolute', top: 50, right: 20, zIndex: 10 },
+  container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 20 },
+  topText: { fontSize: 36, marginBottom: 5 },
+  logoText: { fontSize: 32, fontWeight: 'bold', fontFamily: Platform.OS === 'ios' ? 'Arial Rounded MT Bold' : 'sans-serif-condensed', marginBottom: 20 },
+  loginBox: { width: '100%', borderRadius: 20, padding: 25, alignItems: 'center', elevation: 8, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 10 },
+  logo: { width: 150, height: 150, marginBottom: 10, resizeMode: 'contain',},
+  loginTitle: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
+  label: { alignSelf: 'flex-start', marginBottom: 5, marginTop: 10 },
+  input: { width: '100%', padding: 12, borderRadius: 10, marginBottom: 5, borderWidth: 1 },
+  forgotPassword: { color: '#fff', marginTop: 10, fontSize: 12, textDecorationLine: 'underline', alignSelf: 'flex-end' },
+  button: { borderRadius: 10, paddingVertical: 12, paddingHorizontal: 40, marginTop: 20 },
+  buttonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
+  backToRegister: { marginTop: 15, fontSize: 12, textDecorationLine: 'underline' },
 });

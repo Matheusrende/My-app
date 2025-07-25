@@ -9,12 +9,12 @@ import { ThemeProvider } from './contexts/ThemeContext';
 
 const Stack = createNativeStackNavigator();
 
-export default function App() {
+export default function App(): React.JSX.Element {
   return (
     <ThemeProvider>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Login">
-          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Registro" component={RegisterScreen} />
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="RedefinirSenha" component={ResetPasswordScreen} />
